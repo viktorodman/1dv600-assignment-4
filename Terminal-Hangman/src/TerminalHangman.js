@@ -15,16 +15,18 @@ class TerminalHangman {
    *
    * @memberof TerminalHangman
    * @param {boolean} test True if the game should be started in test mode.
+   * @param {boolean} testSettings True if the game should be started in test settings mode.
    */
-  constructor (test) {
+  constructor (test, testSettings) {
     this._test = test
+    this._testSettings = testSettings
     this._exitEvent = 'exitToMenu'
     this._menuItems = ['Play Game', 'Change Settings', 'Quit Game']
 
     this._gameIO = new GameIO()
     this._guessDecrement = 1
     this._gameMode = 'Normal'
-    this._gameSettings = new GameSettings(this._gameMode, this._guessDecrement, this._exitEvent)
+    this._gameSettings = new GameSettings(this._gameMode, this._guessDecrement, this._exitEvent, this._test)
   }
 
   /**
@@ -34,7 +36,11 @@ class TerminalHangman {
    */
   async startMenu () {
     if (this._test) {
-      this.startTestSession()
+      if (this._testSettings) {
+        this.showSettings()
+      } else {
+        this.startTestSession()
+      }
     } else {
       const menuChoice = await this._gameIO.promptList('Game Menu', this._menuItems)
 
@@ -71,7 +77,7 @@ class TerminalHangman {
    * @memberof TerminalHangman
    */
   startTestSession () {
-    const game = new Game(this._exitEvent, true)
+    const game = new Game(this._exitEvent, this._guessDecrement, this._gameMode, true)
 
     game.on(this._exitEvent, () => {
       process.exit(0)

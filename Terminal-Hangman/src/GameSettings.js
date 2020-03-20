@@ -16,13 +16,15 @@ class GameSettings extends EvenEmitter {
    * @param {string} currentMode The current game mode.
    * @param {number} currentDifficulty The current difficulty.
    * @param {string} exitEvent Event to exit to the menu.
+   * @param {boolean} test True if in test mode.
    */
-  constructor (currentMode, currentDifficulty, exitEvent) {
+  constructor (currentMode, currentDifficulty, exitEvent, test) {
     super()
     this._io = new GameIO()
+    this._test = test
     this._settingOptions = ['Change Game Mode', 'Change Difficulty', 'Go Back']
     this._gameModes = ['Normal', 'Invisible']
-    this._difficulties = ['Easy', 'Medium', 'Hard']
+    this._difficulties = ['Easy', 'Normal', 'Hard']
     this._mode = currentMode
     this._difficulty = currentDifficulty
     this._exitEvent = exitEvent
@@ -34,8 +36,13 @@ class GameSettings extends EvenEmitter {
    * @memberof GameSettings
    */
   async displaySettings () {
+    if (this._test) {
+      console.log(`
+      Current Game Mode: ${this._mode}
+      Current Difficulty: ${this._difficulty}
+      `)
+    }
     const settingChoice = await this._io.promptList('Settings', this._settingOptions)
-
     switch (settingChoice) {
       case this._settingOptions[0] : this.changeGameModes()
         break
@@ -65,11 +72,13 @@ class GameSettings extends EvenEmitter {
    * @memberof GameSettings
    */
   async changeDifficulty () {
-    console.log(`
-Easy: 8 Wrong Guesses
-Medium: 4 Wrong Guesses
-Hard: 2 Wrong Guesses 
-`)
+    if (!this._test) {
+      console.log(`
+      Easy: 8 Wrong Guesses
+      Normal: 4 Wrong Guesses
+      Hard: 2 Wrong Guesses 
+      `)
+    }
 
     const gameMode = await this._io.promptList('Game Mode', this._difficulties)
 

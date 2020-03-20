@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 const FileReader = require('../FileReader')
-const GameLogic = require('../GameLogic')
 
 // Test for the getFilesInDir method in the FileReader Class
 
@@ -40,15 +39,4 @@ it('Should return the object "{ one: test1, two: test2 }"', async () => {
   const expectedResult = { one: 'test1', two: 'test2' }
 
   await expect(sut.getJsonFile(input)).resolves.toEqual(expectedResult)
-})
-
-// Failing test for GameLogic
-
-it('Should return true', () => {
-  const sut = new GameLogic()
-  const input1 = 'test'
-  const input2 = 'test'
-  const expectedResult = true
-
-  expect(sut.checkWordComplete(input1, input2)).toBe(expectedResult)
 })
