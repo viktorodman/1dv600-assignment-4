@@ -2,6 +2,7 @@
 
 const Game = require('./Game')
 const GameIO = require('./GameIO')
+const GameSettings = require('./GameSettings')
 
 /**
  * A TerminalHangman Game.
@@ -21,7 +22,9 @@ class TerminalHangman {
     this._menuItems = ['Play Game', 'Change Settings', 'Quit Game']
 
     this._gameIO = new GameIO()
-    this._allowedGuesses = 8
+    this._guessDecrement = 1
+    this._gameMode = 'Normal'
+    this._gameSettings = new GameSettings(this._gameMode, this._guessDecrement, this._exitEvent)
   }
 
   /**
@@ -52,7 +55,7 @@ class TerminalHangman {
    * @memberof TerminalHangman
    */
   startGame () {
-    const game = new Game(this._exitEvent, this._allowedGuesses, false)
+    const game = new Game(this._exitEvent, this._guessDecrement, this._gameMode, false)
 
     game.on(this._exitEvent, () => {
       this.startMenu()
@@ -62,8 +65,13 @@ class TerminalHangman {
     game.setUpGame()
   }
 
+  /**
+   * Starts a test version of the hangman game.
+   *
+   * @memberof TerminalHangman
+   */
   startTestSession () {
-    const game = new Game(this._exitEvent, this._allowedGuesses, true)
+    const game = new Game(this._exitEvent, true)
 
     game.on(this._exitEvent, () => {
       process.exit(0)
@@ -78,7 +86,14 @@ class TerminalHangman {
    * @memberof TerminalHangman
    */
   showSettings () {
-    console.log('SETTINGS')
+    this._gameSettings.on(this._exitEvent, (gameData) => {
+      this._guessDecrement = gameData.difficulty
+      this._gameMode = gameData.mode
+      this.startMenu()
+      this._gameSettings.removeAllListeners(this._exitEvent)
+    })
+
+    this._gameSettings.displaySettings()
   }
 
   /**

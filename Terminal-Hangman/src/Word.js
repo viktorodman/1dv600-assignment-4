@@ -10,8 +10,10 @@ class Word {
    * Creates an instance of Word.
    *
    * @memberof Word
+   * @param {string} gameMode The game mode.
    */
-  constructor () {
+  constructor (gameMode) {
+    this._gameMode = gameMode
     this._word = undefined
     this._hiddenWord = undefined
   }
@@ -26,6 +28,12 @@ class Word {
     this._word = list[Math.floor(Math.random() * list.length)].toLowerCase()
   }
 
+  /**
+   * Sets the current word.
+   *
+   * @param {string} word A word.
+   * @memberof Word
+   */
   setWord (word) {
     this._word = word
   }
@@ -37,10 +45,15 @@ class Word {
    */
   setHiddenWord () {
     const hiddenWord = [...this._word].map((character) => {
-      if (character !== ' ') {
-        character = '_'
+      if (this._gameMode === 'Invisible') {
+        return ' '
+      } else {
+        if (character !== ' ') {
+          character = '_'
+        }
+
+        return character
       }
-      return character
     })
     this._hiddenWord = hiddenWord.join('')
   }

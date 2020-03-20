@@ -9,12 +9,15 @@ class GameLogic {
   /**
    * Creates an instance of GameLogic.
    *
-   * @param {number} allowedGuesses Ther number of allowed guesses.
+   * @param {number} numberOfBodyParts Number of body parts on the man getting hanged.
+   * @param {number} guessDecrement The decrement for each wrong guess.
    * @memberof GameLogic
    */
-  constructor (allowedGuesses) {
-    this._allowedGuesses = allowedGuesses
-    this._guessesLeft = allowedGuesses
+  constructor (numberOfBodyParts, guessDecrement) {
+    this._numberOfBodyParts = numberOfBodyParts
+    this._guessDecrement = guessDecrement
+    this._guessesLeft = numberOfBodyParts
+    this._wrongGuesses = 0
   }
 
   /**
@@ -23,7 +26,8 @@ class GameLogic {
    * @memberof GameLogic
    */
   resetGusses () {
-    this._guessesLeft = this._allowedGuesses
+    this._guessesLeft = this._numberOfBodyParts
+    this._wrongGuesses = 0
   }
 
   /**
@@ -47,11 +51,11 @@ class GameLogic {
    * @memberof GameLogic
    */
   checkWordComplete (word, hiddenWord) {
-    const wordComplete = false
+    let wordComplete = false
     // Remove comment to make the game work
-    /* if (word === hiddenWord) {
+    if (word === hiddenWord) {
       wordComplete = true
-    } */
+    }
     return wordComplete
   }
 
@@ -81,7 +85,8 @@ class GameLogic {
    * @memberof GameLogic
    */
   removeGuess () {
-    this._guessesLeft--
+    this._guessesLeft -= this._guessDecrement
+    this._wrongGuesses++
   }
 
   /**
@@ -94,14 +99,18 @@ class GameLogic {
     return this._guessesLeft === 0
   }
 
+  addNumberOfGuesses () {
+
+  }
+
   /**
    * Gets the number of used guesses.
    *
    * @returns {number} The number of used guesses.
    * @memberof GameLogic
    */
-  getWrongGuesses () {
-    return this._allowedGuesses - this._guessesLeft
+  getNumberOfGuesses () {
+    return this._wrongGuesses
   }
 }
 

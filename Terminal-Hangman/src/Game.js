@@ -20,17 +20,18 @@ class Game extends EvenEmitter {
    *
    * @memberof Game
    * @param {string} exitEvent The name of an event that exits to the start menu.
-   * @param {number} allowedGuesses The allowed number of guesses.
+   * @param {number} guessDecrement The guess decrement.
+   * @param {string} gameMode The selected game mode.
    * @param {boolean} test If the game is tested.
    */
-  constructor (exitEvent, allowedGuesses, test) {
+  constructor (exitEvent, guessDecrement, gameMode, test) {
     super()
     this._test = test
     this._wordListDirPath = './src/word-lists'
     this._gameIO = new GameIO()
     this._wordList = new WordList(this._wordListDirPath)
-    this._word = new Word()
-    this._gameLogic = new GameLogic(allowedGuesses)
+    this._word = new Word(gameMode)
+    this._gameLogic = new GameLogic(drawings.length - 1, guessDecrement)
     this._player = new Player()
 
     this._exitEvent = exitEvent
@@ -163,7 +164,7 @@ class Game extends EvenEmitter {
    * @memberof Game
    */
   async gameOver (message) {
-    this._gameIO.displayGameResults(message, (this._gameLogic.getWrongGuesses()), this._word.getWord())
+    this._gameIO.displayGameResults(message, (this._gameLogic.getNumberOfGuesses()), this._word.getWord())
     const playAgain = await this._gameIO.promptConfirmation('Play Again?')
 
     if (playAgain) {

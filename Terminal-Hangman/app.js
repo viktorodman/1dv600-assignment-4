@@ -12,7 +12,7 @@ let startValue = false
 if (process.argv[2] === 'test') {
   startValue = true
 }
-
+console.clear()
 const terminalHangman = new TerminalHangman(startValue)
 
 terminalHangman.startMenu()

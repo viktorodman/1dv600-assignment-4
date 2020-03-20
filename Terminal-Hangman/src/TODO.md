@@ -1,0 +1,1 @@
+Check for this._guessDecrement and this._gameMode in Game and change decrement in Game Logic
